@@ -58,120 +58,25 @@
 #include <DList.h>
 #include <Stack.h>
 #include <Queue.h>
-
 #include <Map.h>
 
-typedef struct Payload Payload;
-struct Payload {
-    i32 id;
-    i32 mx;
-    char *str;
-};
-
-typedef struct vec4i8 vec4i8;
-struct vec4i8 { i8 x; i8 y; i8 z; i8 w; };
-
-void Arena_test() {
-    Arena arena = {0};
-    arenaInit(&arena);
-
-    const i32 len = 4;
-    f32 *nums = arenaPushArray(&arena, i32, len);
-    for (i32 i = 0; i < len; ++i) {
-        nums[i] = (f32)(i + 1);
-    }
-    for (i32 i = 0; i < len; ++i) {
-        printf("%f ", nums[i]);
-    }
-    printf("\n");
-
-    u8 *ptr = (u8 *)nums;
-    for (i32 i = 0; i < sizeof(f32) * len; ++i) {
-        printf("%02x ", ptr[i]);
-    }
-    printf("\n");
-
-    void *pos = arena.cursor;
-
-    char *str0 = strAlloc(&arena, "this is a te");
-    char *str1 = strAlloc(&arena, "st string to");
-    char *str2 = strAlloc(&arena, "alloc bytes.");
-    printf("%s\n", str0);
-    printf("%s\n", str1);
-    printf("%s\n", str2);
-
-    strDealloc(&arena, str2);
-    str2 = strAlloc(&arena, "fortitude");
-    printf("%s\n", str0);
-    printf("%s\n", str1);
-    printf("%s\n", str2);
-
-    arenaSetPos(&arena, pos);
-    i8 *x = arenaPush(&arena, sizeof(i8), _Alignof(i8));
-    *x = 0xDD;
-
-    Payload *pld = arenaPushStruct(&arena, Payload);
-    pld->id = 0xDEADBEEF;
-    pld->mx = 0xCAFEBABE;
-    pld->str = "Name0";
-    arenaPop(&arena, sizeof(Payload));
-
-    pld = arenaPushStruct(&arena, Payload);
-    pld->id = 0xFFFFFFFF;
-    pld->mx = 0xFFFFFFFF;
-    pld->str = "Name0";
-    arenaPop(&arena, sizeof(Payload));
-    pld->id = 0xDEADBEEF;
-    pld->mx = 0xCAFEBABE;
-    pld->str = "Name0";
-
-    arenaSetPos(&arena, pos);
-    nums = arenaPushArray(&arena, i32, len);
-    for (i32 i = 0; i < len; ++i) {
-        nums[i] = (f32)(i + 1);
-    }
-
-    arenaClear(&arena);
-
-    // vec4i8 *vs = arenaPushArrayZero(&arena, vec4i8, 32);
-    const i32 npts = 32;
-    vec4i8 *vs = arenaPushArray(&arena, vec4i8, npts);
-    for (i32 i = 0; i < npts; ++i) {
-        vs[i].x = 0xAA;
-        vs[i].y = 0xBB;
-        vs[i].z = 0xCC;
-        vs[i].w = 0xDD;
-    }
-    arenaPopArray(&arena, vec4i8, npts);
-
-    // printf("Memory Dump: %d bytes allocated.\n", N);
-    // printf("%p: ", store);
-    // for (i32 i = 0; i < N; ++i) {
-    //     if(i % 8 == 0 && i != 0) {
-    //         printf("\n");
-    //         printf("%p: ", &store[i]);
-    //     }
-    //     printf("%02x ", store[i]);
-    // }
-    // arenaClear(&arena);
-}
-
 i32 main(i32 argc, char *argv[]) {
-    printf("haikal test begin.\n");
-    Arena_test();
+    printf("makina begin.\n");
+    Arena arena = {};
+    arenaInit(&arena);
+    void *pos = arenaGetPos(&arena);
+    i32 *numbers = arenaPushArray(&arena, i32, 32);
+    for (i32 i = 0; i < 32; ++i) {
+        numbers[i] = i;
+    }
+    for (i32 i = 0; i < 32; ++i) {
+        printf("%d ", numbers[i]);
+    }
+    puts("");
+    arenaSetPos(&arena, pos);
+    arenaClear(&arena);
     Archetype_test();
-    printf("haikal test end.\n");
-
-    // TODO: fix code gen for external files
-    // for this to work, we need to read all the included files
-    // compile_commands.json should be enough...
-    // or, use a unity build and just include everything in main.c 
-    // but LSP will die in Component.h...
-    //---------------------------------------------------------------------------------------------------
-    // Component comp = Component_create(10);
-    // printf("comp.id = %d\n", comp.id);
-    // Component_destroy(&comp);
-
+    printf("makina end.\n");
     return 0;
 }
 
