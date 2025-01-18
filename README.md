@@ -1,5 +1,5 @@
-# c-init
-C programming template
+# makina مكينة
+C game engine
 # how to run:
 - initalize `cl.exe` using `x64 Native Tools Command Prompt for VS 2019`
 - run `git submodule update --init --recursive`
